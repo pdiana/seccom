@@ -1,0 +1,8 @@
+{
+  "WARNING": "DO NOT STORE PLAIN VALUES HERE! ONLY MAPPING TO SERVER ENV VARS!!!",
+  "dataBase": {
+    "host": "app_dbHost",
+    "user": "app_dbUser",
+    "password": "app_dbPassword"
+  }
+}
