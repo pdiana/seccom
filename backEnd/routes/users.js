@@ -3,13 +3,20 @@ const router = express.Router();
 const validation = require('../helpers/validation');
 const fakeDb = require('../helpers/dummyDb');
 
+// CORS ENABLED FOR TESTING PURPOSES
+
+
 // GET ALL
 router.get('/', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     res.send(fakeDb);
 });
 
 // GET BY ID
 router.get('/:id', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     const user = fakeDb.find(user => user.id === parseInt(req.params.id));
 
     //check if user id exists & return user
@@ -19,6 +26,8 @@ router.get('/:id', (req, res) => {
 
 //POST
 router.post('/', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     //input validation
     const {error} = validation(req.body);
     if (error) return res.status(400).send(error.details[0].message);
@@ -36,6 +45,8 @@ router.post('/', (req, res) => {
 
 // PUT
 router.put('/:id', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     const user = fakeDb.find(user => user.id === parseInt(req.params.id));
     //check if user id exists & input validation
     if (!user) return res.status(404).send('ID does not match any user in database');
@@ -53,6 +64,8 @@ router.put('/:id', (req, res) => {
 
 // DELETE
 router.delete('/:id', (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     const user = fakeDb.find(user => user.id === parseInt(req.params.id));
     //check if user id exists & delete user
     if (!user) return res.status(404).send('ID does not match any user in database');

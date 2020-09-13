@@ -1,5 +1,5 @@
 {
-  "name": "Dummy App",
+  "name": "Seccom",
   "version": "1.0.0",
   "private": true,
   "description": "Simple Express REST API with vue data retrieval and display.",
@@ -15,6 +15,7 @@
   },
   "main": "backEnd/index.js",
   "dependencies": {
+    "axios": "^0.20.0",
     "config": "^3.3.1",
     "core-js": "^3.6.5",
     "debug": "^4.1.1",

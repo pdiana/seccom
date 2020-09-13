@@ -17,6 +17,7 @@ if (app.get('env') === 'development') {
     debug('Development Environment: Logging Enabled!');
 }
 
+
 //ROUTES
 const home = require('./routes/home');
 const users = require('./routes/users');
