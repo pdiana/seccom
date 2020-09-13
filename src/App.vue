@@ -1,9 +1,7 @@
 <template>
-
-    <v-app class="grey lighten-4">
-
-      <Navbar/>
-        <v-main>
+    <v-app>
+        <Navbar/>
+        <v-main class="grey lighten-4 px-4 pb-4">
             <router-view></router-view>
         </v-main>
     </v-app>
@@ -16,11 +14,7 @@
         name: 'App',
 
         components: {
-            Navbar
+            Navbar,
         },
-
-        data: () => ({
-            //
-        }),
     };
 </script>
