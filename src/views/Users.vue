@@ -11,6 +11,7 @@
                     hide-details
             ></v-text-field>
         </v-card-title>
+        <UserDetails :showDetails.sync="dialog" :selectedUser="selected" @hideDetails="closeDetails"/>
         <v-data-table
                 v-model="selected"
                 :headers="headers"
@@ -27,7 +28,7 @@
         >
 
             <template v-slot:item.hasOpenTicket="{ item }">
-                <v-icon :color=getColor(item)>train</v-icon>
+                <v-icon :color=setColor(item)>train</v-icon>
             </template>
             <template v-slot:item.tickets[0].ticket_date="{ item }">
                 {{getNextDate(item)}}
@@ -39,9 +40,12 @@
 
 <script>
     import axios from "axios"
+    import UserDetails from "../components/UserDetails";
 
     export default {
-        components: {},
+        components: {
+            UserDetails
+        },
         data() {
             return {
                 isLoading: true,
@@ -58,7 +62,7 @@
             }
         },
         methods: {
-            getColor(user) {
+            setColor(user) {
                 return user.hasOpenTicket ? 'green' : 'red'
             },
             getNextDate(user) {
@@ -69,6 +73,11 @@
                 this.selected.push(user);
                 this.dialog = true
             },
+            closeDetails(){
+                this.dialog = false;
+                //todo compare returned user and update list of changes
+
+            }
 
         },
         created() {

@@ -2,7 +2,6 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Users from "../views/Users";
 import About from "../views/About";
-
 Vue.use(VueRouter);
 
 const routes = [

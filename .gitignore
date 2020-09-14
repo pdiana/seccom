@@ -23,3 +23,5 @@ pnpm-debug.log*
 *.sw?
 /src/views/Ex_Espansion.vue
 /src/views/Ex_Table.vue
+/src/views/Ex_Text.vue
+/src/views/Ex_Validation.vue

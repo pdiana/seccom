@@ -1,9 +1,9 @@
 <template>
   <div class="about">
-    <h1 class="v-subheader grey--text">This is an about page</h1>
     <v-container class="my-5">
-      <p>About Page Content</p>
-      <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Culpa debitis dolores et maiores maxime numquam, officia quia quidem recusandae rerum. Animi at culpa doloribus est laboriosam modi obcaecati, quibusdam sit.</p>
+      <h1 class="v-subheader grey--text">About this App</h1>
+      <p>The app intends showcase CRUD operations with an express REST api</p>
+      <p>The idea is to list users in the database, mark the ones that have an "active" purchased train ticket, ie a ticket for a trip that has yet to happen and give the admin the possibility of editing or deleting each user.</p>
     </v-container>
   </div>
 </template>

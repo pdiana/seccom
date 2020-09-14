@@ -41,7 +41,7 @@ While/If there's still time until all candidates have been interviewed I'm plann
 - [X] Responsive Menu
 - [X] User Ajax calls
 - [X] Search Sort & Filter users
-- [ ] Modal selected user's details
+- [X] Modal selected user's details
 - [ ] Edit / Add / Delete user
 - [ ] Mockup SQL schema
 - [ ] MySql mock db with stored procedures
