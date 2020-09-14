@@ -34,7 +34,6 @@
                 mobileNav: false,
                 menuItems: [
                     {title: 'Users', route: '/', icon: 'people'},
-                    {title: 'Tickets', route: '/tickets', icon: 'train'},
                     {title: 'About', route: '/about', icon: 'info'},
                     {title: 'Log Out', route: '#', icon: 'exit_to_app'},
                 ]

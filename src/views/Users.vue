@@ -1,82 +1,98 @@
 <template>
-    <div class="users">
+    <v-card class="users_body">
+        <v-card-title class="grey--text">
+            Users
+            <v-spacer></v-spacer>
+            <v-text-field
+                    v-model="search"
+                    append-icon="mdi-magnify"
+                    label="Search"
+                    single-line
+                    hide-details
+            ></v-text-field>
+        </v-card-title>
+        <v-data-table
+                v-model="selected"
+                :headers="headers"
+                :items="users"
+                :search="search"
+                :sort-by="['last_name']"
+                :sort-desc="[false, true]"
+                :loading="isLoading"
+                class="elevation-1"
+                hide-default-footer
+                disable-pagination
+                single-select
+                @click:row="selectUser"
+        >
 
-        <v-container class="container">
-            <div class="toolbar">
-                <h1 class="v-subheader grey--text">Registered Users</h1>
-            </div>
-            <div>
-                <v-card outlined hover class="user_row pa-0" v-bind:class="markOpen(user)" v-for="user in users"
-                        :key="user.id">
-                    <v-row class="pa-0 ma-0">
-                        <v-col class="pa-0 ma-0" cols="12" sm="8">
-                            <div class="caption grey--text px-2">User Name</div>
-                            <div class="px-2 pb-1">{{user.first_name}} {{user.last_name}}</div>
-                        </v-col>
-                        <v-col class="pa-0 ma-0" cols="6" sm="2">
-                            <div class="caption grey--text text-center">Open Tickets</div>
-                            <div class="text-center px-2 pb-1">
-                                <v-icon v-if="hasOpenTicket(user)" color="green">train</v-icon>
-                                <v-icon v-else color="red">train</v-icon>
-                            </div>
-                        </v-col>
-                        <v-col class="pa-0 ma-0" cols="6" sm="2">
-                            <div class="caption grey--text text-center">Next ticket date</div>
-                            <div v-if="hasOpenTicket(user)" class="text-center px-2 pb-1">
-                                {{user.tickets[0].ticket_date}}
-                            </div>
-                            <div v-else class="text-center px-2 pb-1">-</div>
-                        </v-col>
-                    </v-row>
-                </v-card>
-            </div>
+            <template v-slot:item.hasOpenTicket="{ item }">
+                <v-icon :color=getColor(item)>train</v-icon>
+            </template>
+            <template v-slot:item.tickets[0].ticket_date="{ item }">
+                {{getNextDate(item)}}
+            </template>
 
-        </v-container>
-    </div>
+        </v-data-table>
+    </v-card>
 </template>
 
 <script>
     import axios from "axios"
 
     export default {
+        components: {},
         data() {
             return {
-                users: []
+                isLoading: true,
+                dialog: false,
+                search: '',
+                selected: [],
+                users: [],
+                headers: [
+                    {text: 'Last Name', value: 'last_name'},
+                    {text: 'First Name', value: 'first_name'},
+                    {text: 'Tickets', value: 'hasOpenTicket'},
+                    {text: 'Next Ticket', value: 'tickets[0].ticket_date'},
+                ],
             }
-
         },
         methods: {
-            hasOpenTicket(user) {
-                return user.hasOpenTicket;
+            getColor(user) {
+                return user.hasOpenTicket ? 'green' : 'red'
             },
-            markOpen(user) {
-                return user.hasOpenTicket ? "hasOpen" : "hasNotOpen";
-            }
+            getNextDate(user) {
+                return user.hasOpenTicket ? user.tickets[0].ticket_date : '-'
+            },
+            selectUser(user) {
+                this.selected = [];
+                this.selected.push(user);
+                this.dialog = true
+            },
+
         },
         created() {
             axios.get('http://localhost:3000/api/users')
-                .then(res => this.users = res.data)
+                .then((res) => {
+                    // workaround to make date sortable since dummy data has a ticket date for all users.
+                    res.data.forEach(function (val) {
+                        if (!val.hasOpenTicket) val.tickets[0].ticket_date = 0
+                    });
+                    this.users = res.data;
+                    this.isLoading = false
+                })
+
                 .catch(err => console.log(err))
-        }
+        },
+
+
     }
 </script>
+
 <style scoped>
-    .user_row.hasOpen {
-        border-left: 4px solid green;
-    }
-
-    .user_row.hasNotOpen {
-        border-left: 4px solid red;
-    }
-
-    .search_bar {
-        z-index: 10;
-        background-color: aliceblue;
-        position: fixed;
-    }
-
-    .users {
-        width: 100%;
+    .users_body {
+        max-width: 800px;
+        margin: auto;
     }
 
 </style>

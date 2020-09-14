@@ -39,14 +39,13 @@ npm run serve
 ### ToDo
 While/If there's still time until all candidates have been interviewed I'm planning to implement: 
 - [X] Responsive Menu
-- [ ] User Ajax calls
-- [ ] Search users
-- [ ] Sort users
-- [ ] Filter users
+- [X] User Ajax calls
+- [X] Search Sort & Filter users
 - [ ] Modal selected user's details
 - [ ] Edit / Add / Delete user
 - [ ] Mockup SQL schema
 - [ ] MySql mock db with stored procedures
 - [ ] Add DB to backend
 - [ ] Add user Auth
-- [ ] Compile & Mock deployment on kubernetes
+- [ ] Better/custom Styling
+- [ ] Compile, Dockerize & Mock deployment on kubernetes
