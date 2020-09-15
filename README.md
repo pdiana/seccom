@@ -18,6 +18,9 @@ this will:
 * start the backend express server on `localhost` `port: 3000`
 * compile and start the vue frontend dev server on `localhost` `port: 8080`
 
+### View the app
+Open the browser on `http://localhost:8080/`
+
 
 ### Troubleshoot app start
 The start script uses `concurrently` to chain the start commands. While not ideal for production environment, this will
@@ -39,13 +42,16 @@ npm run serve
 ### ToDo
 While/If there's still time until all candidates have been interviewed I'm planning to implement: 
 - [X] Responsive Menu
-- [X] User Ajax calls
+- [X] User GET Ajax calls
 - [X] Search Sort & Filter users
 - [X] Modal selected user's details
-- [ ] Edit / Add / Delete user
+- [ ] Frontend data validation
+- [ ] POST / PUT / DELETE user Ajax calls
+- [ ] Keyboard navigation
 - [ ] Mockup SQL schema
 - [ ] MySql mock db with stored procedures
-- [ ] Add DB to backend
+- [ ] Add DB to backend with sequelize
 - [ ] Add user Auth
+- [ ] Add automated Swagger documentation for API
 - [ ] Better/custom Styling
 - [ ] Compile, Dockerize & Mock deployment on kubernetes

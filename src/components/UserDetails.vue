@@ -3,14 +3,12 @@
         <v-row justify="center">
             <v-dialog v-model="dialog" persistent max-width="290">
                 <v-card>
-                    <v-card-title class="headline">{{warning.headline}}</v-card-title>
-                    <v-card-text>
-                        All modifications will be lost
-                    </v-card-text>
+                    <v-card-text class="headline text-center">{{warning.headline}}</v-card-text>
+                    <v-card-text class="text-center">{{warning.text}}</v-card-text>
                     <v-card-actions>
+                        <v-btn color="green darken-1" text @click="dialog = false">{{warning.noLabel}}</v-btn>
                         <v-spacer></v-spacer>
-                        <v-btn color="green darken-1" text @click="dialog = false">Continue editing</v-btn>
-                        <v-btn color="red darken-1" text @click="warning.discardAction">{{warning.discardLabel}}
+                        <v-btn color="red darken-1" text @click="warning.yesAction">{{warning.yesLabel}}
                         </v-btn>
                     </v-card-actions>
                 </v-card>
@@ -28,9 +26,14 @@
                             <v-card-title class="headline grey--text">User Details</v-card-title>
                         </v-col>
                         <v-col cols="1">
-                            <v-btn text @click="closeModal">
-                                <v-icon color="red">highlight_off</v-icon>
-                            </v-btn>
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn text @click="closeModal" v-bind="attrs" v-on="on">
+                                        <v-icon color="red">highlight_off</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Close Details</span>
+                            </v-tooltip>
                         </v-col>
                     </v-row>
                 </v-container>
@@ -61,18 +64,38 @@
                     <v-row no-gutters>
                         <v-col cols="5"></v-col>
                         <v-col cols="2">
-                            <v-btn v-if="!isEditing" text @click="editDetails">
-                                <v-icon>edit</v-icon>
-                            </v-btn>
-                            <v-btn v-else text @click="cancelEdit">
-                                <v-icon>highlight_off</v-icon>
-                            </v-btn>
-                            <v-btn v-if="!isEditing" text @click="deleteUser">
-                                <v-icon>delete</v-icon>
-                            </v-btn>
-                            <v-btn v-else text @click="saveEdit">
-                                <v-icon>check_circle_outline</v-icon>
-                            </v-btn>
+                            <v-tooltip v-if="!isEditing" top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn text @click="editDetails" v-bind="attrs" v-on="on">
+                                        <v-icon>edit</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Edit User</span>
+                            </v-tooltip>
+                            <v-tooltip v-else top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn text @click="cancelEdit" v-bind="attrs" v-on="on">
+                                        <v-icon>highlight_off</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Cancel Editing</span>
+                            </v-tooltip>
+                            <v-tooltip v-if="!isEditing" top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn text @click="deletePrompt" v-bind="attrs" v-on="on">
+                                        <v-icon>delete</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Delete User</span>
+                            </v-tooltip>
+                            <v-tooltip v-else top>
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn text @click="saveEdit" v-bind="attrs" v-on="on">
+                                        <v-icon>check_circle_outline</v-icon>
+                                    </v-btn>
+                                </template>
+                                <span>Save Changes</span>
+                            </v-tooltip>
                         </v-col>
                         <v-col cols="5"></v-col>
                     </v-row>
@@ -92,11 +115,13 @@
 </template>
 
 <script>
+    import axios from "axios"
+
     export default {
         name: "UserDetails",
         props: {
             showDetails: {type: Boolean, default: false},
-            selectedUser: Array,
+            selectedUserId: {type: Number},
         },
         data() {
             return {
@@ -106,37 +131,60 @@
                     firstName: '',
                     email: '',
                 },
+                tempValues: {
+                    lastName: '',
+                    firstName: '',
+                    email: '',
+                },
                 isEditing: false,
                 warning: {
                     headline: '',
-                    discardAction: function () {
+                    text: '',
+                    yesAction: function () {
 
                     },
-                    discardLabel: ''
+                    yesLabel: '',
+                    noLabel: ''
                 }
-
             }
         },
         methods: {
             closeModal() {
                 if (this.isEditing) {
                     this.warning.headline = 'Close without saving?';
-                    this.warning.discardAction = this.discardChanges;
-                    this.warning.discardLabel = 'Close';
+                    this.warning.text = 'Changes will not be applied!';
+                    this.warning.yesAction = this.discardChanges;
+                    this.warning.yesLabel = 'Close';
+                    this.warning.noLabel = 'Keep Editing';
                     this.dialog = true
                 } else
                     this.$emit('hideDetails', this.fields)
             },
             editDetails() {
+                this.tempValues = this.form;
                 this.isEditing = true
             },
+            deletePrompt() {
+                this.warning.headline = 'Delete User?';
+                this.warning.text = 'This will remove the user from the database!';
+                this.warning.noLabel = 'Keep User';
+                this.warning.yesLabel = 'Delete';
+                this.warning.yesAction = this.deleteUser;
+                this.dialog = true
+
+            },
             deleteUser() {
+                //todo delete AJAX
+                this.dialog = false;
+                this.closeModal();
 
             },
             cancelEdit() {
                 this.warning.headline = 'Discard changes?';
-                this.warning.discardAction = this.undoChanges;
-                this.warning.discardLabel = 'Discard';
+                this.warning.text= "Changes won't be saved into the database";
+                this.warning.yesAction = this.undoChanges;
+                this.warning.yesLabel = 'Discard';
+                this.warning.noLabel = 'Keep Editing';
                 this.dialog = true
             },
             discardChanges() {
@@ -146,20 +194,34 @@
             },
             saveEdit() {
                 this.isEditing = false;
+                this.fields = this.form;
+                //todo POST to backend
             },
             undoChanges() {
                 this.isEditing = false;
-                this.fields.lastName = this.selectedUser[0].last_name;
-                this.fields.firstName = this.selectedUser[0].first_name;
-                this.fields.email = this.selectedUser[0].email;
+                this.fields = this.tempValues;
+                console.log(this.tempValues)
                 this.dialog = false;
             }
         },
         watch: {
-            selectedUser: function (val) {
-                this.fields.lastName = val[0].last_name;
-                this.fields.firstName = val[0].first_name;
-                this.fields.email = val[0].email;
+            selectedUserId: function (id) {
+                axios.get('http://localhost:3000/api/users/' + id)
+                    .then((res) => {
+                        this.fields.lastName = res.data.last_name;
+                        this.fields.firstName = res.data.first_name;
+                        this.fields.email = res.data.email;
+                    });
+
+            },
+        },
+        computed: {
+            form() {
+                return {
+                    lastName: this.fields.lastName,
+                    firstName: this.fields.firstName,
+                    email: this.fields.email
+                }
             },
         }
     }

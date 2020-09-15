@@ -11,7 +11,7 @@
                     hide-details
             ></v-text-field>
         </v-card-title>
-        <UserDetails :showDetails.sync="dialog" :selectedUser="selected" @hideDetails="closeDetails"/>
+        <UserDetails :showDetails.sync="dialog" :selectedUserId="selectedUserId" @hideDetails="closeDetails"/>
         <v-data-table
                 v-model="selected"
                 :headers="headers"
@@ -52,6 +52,7 @@
                 dialog: false,
                 search: '',
                 selected: [],
+                selectedUserId:0,
                 users: [],
                 headers: [
                     {text: 'Last Name', value: 'last_name'},
@@ -71,19 +72,20 @@
             selectUser(user) {
                 this.selected = [];
                 this.selected.push(user);
+                this.selectedUserId= this.selected[0].id;
                 this.dialog = true
             },
             closeDetails(){
                 this.dialog = false;
                 //todo compare returned user and update list of changes
-
             }
-
         },
         created() {
             axios.get('http://localhost:3000/api/users')
                 .then((res) => {
                     // workaround to make date sortable since dummy data has a ticket date for all users.
+                    // in a real application i would use moment.js to standardize date format,
+                    // iterate thru tickets dates and compare them to today date to determine if a ticket is "active"
                     res.data.forEach(function (val) {
                         if (!val.hasOpenTicket) val.tickets[0].ticket_date = 0
                     });
@@ -93,8 +95,6 @@
 
                 .catch(err => console.log(err))
         },
-
-
     }
 </script>
 
