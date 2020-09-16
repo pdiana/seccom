@@ -200,7 +200,6 @@
             undoChanges() {
                 this.isEditing = false;
                 this.fields = this.tempValues;
-                console.log(this.tempValues)
                 this.dialog = false;
             }
         },
