@@ -87,7 +87,6 @@
                     this.users = res.data;
                 })
                 .then(()=> this.isLoading = false)
-
                 .catch(err => console.log(err))
         },
     }

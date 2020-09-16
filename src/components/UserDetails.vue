@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-row justify="center">
-            <v-dialog v-model="dialog" persistent max-width="290">
+            <v-dialog v-model="dialog" persistent max-width="300">
                 <v-card>
                     <v-card-text class="headline text-center">{{warning.headline}}</v-card-text>
                     <v-card-text class="text-center">{{warning.text}}</v-card-text>
@@ -126,6 +126,7 @@
         data() {
             return {
                 dialog: false,
+                isEditing: false,
                 fields: {
                     lastName: '',
                     firstName: '',
@@ -136,26 +137,26 @@
                     firstName: '',
                     email: '',
                 },
-                isEditing: false,
                 warning: {
                     headline: '',
                     text: '',
-                    yesAction: function () {
-
-                    },
+                    noLabel: '',
                     yesLabel: '',
-                    noLabel: ''
+                    yesAction: () => {
+                    }
                 }
             }
         },
         methods: {
             closeModal() {
                 if (this.isEditing) {
-                    this.warning.headline = 'Close without saving?';
-                    this.warning.text = 'Changes will not be applied!';
-                    this.warning.yesAction = this.discardChanges;
-                    this.warning.yesLabel = 'Close';
-                    this.warning.noLabel = 'Keep Editing';
+                    this.warning = {
+                        headline: 'Close without saving?',
+                        text: 'Changes will not be applied!',
+                        noLabel: 'Keep Editing',
+                        yesLabel: 'Close',
+                        yesAction: this.discardChanges
+                    };
                     this.dialog = true
                 } else
                     this.$emit('hideDetails', this.fields)
@@ -165,13 +166,14 @@
                 this.isEditing = true
             },
             deletePrompt() {
-                this.warning.headline = 'Delete User?';
-                this.warning.text = 'This will remove the user from the database!';
-                this.warning.noLabel = 'Keep User';
-                this.warning.yesLabel = 'Delete';
-                this.warning.yesAction = this.deleteUser;
+                this.warning = {
+                    headline: 'Delete User?',
+                    text: 'This will remove the user from the database!',
+                    noLabel: 'Keep User',
+                    yesLabel: 'Delete User',
+                    yesAction: this.deleteUser
+                };
                 this.dialog = true
-
             },
             deleteUser() {
                 //todo delete AJAX
@@ -180,11 +182,13 @@
 
             },
             cancelEdit() {
-                this.warning.headline = 'Discard changes?';
-                this.warning.text= "Changes won't be saved into the database";
-                this.warning.yesAction = this.undoChanges;
-                this.warning.yesLabel = 'Discard';
-                this.warning.noLabel = 'Keep Editing';
+                this.warning = {
+                    headline: 'Discard changes?',
+                    text: 'Changes won\'t be saved into the database!',
+                    noLabel: 'Keep Editing',
+                    yesLabel: 'Discard Changes',
+                    yesAction: this.undoChanges
+                };
                 this.dialog = true
             },
             discardChanges() {
@@ -211,7 +215,6 @@
                         this.fields.firstName = res.data.first_name;
                         this.fields.email = res.data.email;
                     });
-
             },
         },
         computed: {
